@@ -1,0 +1,6 @@
+.idea/
+
+vendor/
+
+app
+coverage.out
