@@ -3,19 +3,47 @@ package processor
 import (
 	"context"
 	"fmt"
-	"github.com/google/go-github/v55/github"
 	"github.com/rapatao/pr-checker-go/domain"
+	"github.com/shurcooL/githubv4"
+	"golang.org/x/oauth2"
 	"log"
-	"strings"
+	"time"
 )
 
 func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRequest {
-	client := github.NewClient(nil).
-		WithAuthToken(service.Token)
+	token := &oauth2.Token{AccessToken: service.Token}
+	tokenSource := oauth2.StaticTokenSource(token)
+	oauth2Client := oauth2.NewClient(ctx, tokenSource)
+	client := githubv4.NewClient(oauth2Client)
 
 	var prs []domain.PullRequest
 
-	//filter := "type:pr"
+	var query struct {
+		Search struct {
+			Edges []struct {
+				Node struct {
+					PullRequest struct {
+						Repository struct {
+							NameWithOwner string
+						}
+
+						Author struct {
+							Login string
+						}
+
+						State     string
+						CreatedAt time.Time
+						UpdatedAt time.Time
+						Number    int
+						Title     string
+						IsDraft   bool
+						Url       string
+					} `graphql:"... on PullRequest"`
+				}
+			}
+		} `graphql:"search(query:$filter, type: ISSUE, last: 100)"`
+	}
+
 	filter := "type:pr state:open"
 
 	if len(service.Author) > 0 {
@@ -26,29 +54,35 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 		filter = fmt.Sprintf("%s repo:%s", filter, repository)
 	}
 
-	issues, response, err := client.Search.Issues(ctx, filter, &github.SearchOptions{
-		Sort: "created",
-	})
+	variables := map[string]interface{}{
+		"filter": githubv4.String(filter),
+	}
+	err := client.Query(ctx, &query, variables)
 	if err != nil {
-		log.Fatalf("search %s returned %d, %v", filter, response.StatusCode, err)
+		log.Print(err)
 	}
 
-	for _, issue := range issues.Issues {
-		repo := issue.GetHTMLURL()
-		if j := strings.LastIndex(repo, "/pull"); j >= 0 {
-			repo = repo[:j]
+	for _, edge := range query.Search.Edges {
+		pr := edge.Node.PullRequest
+
+		if pr.Title == "" ||
+			pr.Repository.NameWithOwner == "" ||
+			pr.Url == "" {
+			continue
 		}
 
 		prs = append(prs, domain.PullRequest{
 			Service:    service.Name,
-			Repository: repo,
-			Title:      issue.GetTitle(),
-			Number:     issue.GetNumber(),
-			Link:       issue.GetHTMLURL(),
-			CreatedAt:  issue.GetCreatedAt().Time,
-			UpdatedAt:  issue.GetUpdatedAt().Time,
-			Author:     issue.GetUser().GetLogin(),
+			Repository: pr.Repository.NameWithOwner,
+			Title:      pr.Title,
+			Number:     pr.Number,
+			Link:       pr.Url,
+			CreatedAt:  pr.CreatedAt,
+			UpdatedAt:  pr.UpdatedAt,
+			Author:     pr.Author.Login,
+			IsDraft:    pr.IsDraft,
 		})
+
 	}
 
 	return prs
