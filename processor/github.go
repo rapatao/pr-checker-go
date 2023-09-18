@@ -2,6 +2,7 @@ package processor
 
 import (
 	"context"
+	"fmt"
 	"github.com/google/go-github/v55/github"
 	"github.com/rapatao/pr-checker-go/domain"
 	"log"
@@ -14,39 +15,40 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 
 	var prs []domain.PullRequest
 
+	//filter := "type:pr"
+	filter := "type:pr state:open"
+
+	if len(service.Author) > 0 {
+		filter = fmt.Sprintf("%s author:%s", filter, service.Author)
+	}
+
 	for _, repository := range service.Repositories {
-		split := strings.Split(repository, "/")
-		if len(split) != 2 {
-			log.Printf("ignoring %s due to malformatting entry \n", repository)
+		filter = fmt.Sprintf("%s repo:%s", filter, repository)
+	}
 
-			continue
+	issues, response, err := client.Search.Issues(ctx, filter, &github.SearchOptions{
+		Sort: "created",
+	})
+	if err != nil {
+		log.Fatalf("search %s returned %d, %v", filter, response.StatusCode, err)
+	}
+
+	for _, issue := range issues.Issues {
+		repo := issue.GetHTMLURL()
+		if j := strings.LastIndex(repo, "/pull"); j >= 0 {
+			repo = repo[:j]
 		}
 
-		opts := &github.PullRequestListOptions{
-			Sort: "created",
-		}
-
-		list, response, err := client.PullRequests.List(ctx, split[0], split[1], opts)
-		if err != nil {
-			log.Printf("%s returned %d. %v \n", repository, response.StatusCode, err)
-
-			continue
-		}
-
-		for _, pullRequest := range list {
-
-			prs = append(prs, domain.PullRequest{
-				Service:    service.Name,
-				Repository: repository,
-				Title:      pullRequest.GetTitle(),
-				Number:     pullRequest.GetNumber(),
-				Link:       pullRequest.GetLinks().GetHTML().GetHRef(),
-				CreatedAt:  pullRequest.GetCreatedAt().Time,
-				UpdatedAt:  pullRequest.GetUpdatedAt().Time,
-				Author:     pullRequest.GetUser().GetLogin(),
-				IsDraft:    pullRequest.GetDraft(),
-			})
-		}
+		prs = append(prs, domain.PullRequest{
+			Service:    service.Name,
+			Repository: repo,
+			Title:      issue.GetTitle(),
+			Number:     issue.GetNumber(),
+			Link:       issue.GetHTMLURL(),
+			CreatedAt:  issue.GetCreatedAt().Time,
+			UpdatedAt:  issue.GetUpdatedAt().Time,
+			Author:     issue.GetUser().GetLogin(),
+		})
 	}
 
 	return prs
