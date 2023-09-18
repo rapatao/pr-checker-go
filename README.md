@@ -35,4 +35,6 @@ It, currently, only support `GitHub`.
 
    On Mac, the plugin is usually placed at: `${HOME}/Library/Application Support/xbar/plugins/`
 
-   `TBD`
+   ```shell
+   curl https://raw.githubusercontent.com/rapatao/pr-checker-go/main/examples/pr-checker.30m.sh -o ${HOME}/Library/Application Support/xbar/plugins/pr-checker.30m.sh
+   ```
