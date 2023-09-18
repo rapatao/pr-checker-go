@@ -68,13 +68,15 @@ func xbarInstall(path string) {
 	app := os.Args[0]
 	app = strings.TrimLeft(app, "./")
 
+	cmd := fmt.Sprintf("%s/%s", dir, app)
+
 	script := fmt.Sprintf(
 		`#!/usr/bin/env sh
 
-if command -v pr-checker-go > /dev/null 2>&1; then
-  %s/%s
+if command -v %s > /dev/null 2>&1; then
+  %s
 fi
-`, dir, app)
+`, cmd, cmd)
 
 	err = os.WriteFile(path+"/pr-checker.30m.sh", []byte(script), os.ModePerm)
 	if err != nil {
