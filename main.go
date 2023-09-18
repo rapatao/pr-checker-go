@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/rapatao/pr-checker-go/internal/domain"
-	"github.com/rapatao/pr-checker-go/internal/output"
-	"github.com/rapatao/pr-checker-go/internal/processor"
+	"github.com/rapatao/pr-checker-go/domain"
+	"github.com/rapatao/pr-checker-go/outgen"
+	"github.com/rapatao/pr-checker-go/processor"
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
@@ -30,5 +30,5 @@ func main() {
 
 	pullRequests := processor.Process(ctx, &config)
 
-	output.ForXBar(pullRequests)
+	outgen.ForXBar(pullRequests)
 }

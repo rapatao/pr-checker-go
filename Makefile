@@ -11,7 +11,7 @@ test:
 	go test -v -count=1 -coverprofile $(COVER_FILE) -cover ./...
 
 build:
-	go build -mod vendor -a -o $(BINARY_NAME) ./cmd/...
+	go build -mod vendor -a -o $(BINARY_NAME) .
 
 run:
-	go run ./cmd/...
+	go run .

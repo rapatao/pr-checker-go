@@ -1,8 +1,8 @@
-package output
+package outgen
 
 import (
 	"fmt"
-	"github.com/rapatao/pr-checker-go/internal/domain"
+	"github.com/rapatao/pr-checker-go/domain"
 )
 
 func ForXBar(prs []domain.PullRequest) {
