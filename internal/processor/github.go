@@ -3,8 +3,8 @@ package processor
 import (
 	"context"
 	"github.com/google/go-github/v55/github"
+	"github.com/rapatao/pr-checker-go/internal/domain"
 	"log"
-	"pr-checker-go/internal/domain"
 	"strings"
 )
 

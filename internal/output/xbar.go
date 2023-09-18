@@ -2,7 +2,7 @@ package output
 
 import (
 	"fmt"
-	"pr-checker-go/internal/domain"
+	"github.com/rapatao/pr-checker-go/internal/domain"
 )
 
 func ForXBar(prs []domain.PullRequest) {

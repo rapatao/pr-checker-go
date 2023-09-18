@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/rapatao/pr-checker-go/internal/domain"
+	"github.com/rapatao/pr-checker-go/internal/output"
+	"github.com/rapatao/pr-checker-go/internal/processor"
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
-	"pr-checker-go/internal/domain"
-	"pr-checker-go/internal/output"
-	"pr-checker-go/internal/processor"
 )
 
 func main() {

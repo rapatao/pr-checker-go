@@ -2,7 +2,7 @@ package processor
 
 import (
 	"context"
-	"pr-checker-go/internal/domain"
+	"github.com/rapatao/pr-checker-go/internal/domain"
 )
 
 func Process(ctx context.Context, config *domain.Config) []domain.PullRequest {
