@@ -1,4 +1,4 @@
-module pr-checker-go
+module github.com/rapatao/pr-checker-go
 
 go 1.21
 

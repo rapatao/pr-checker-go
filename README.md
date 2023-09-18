@@ -28,7 +28,7 @@ It, currently, only support `GitHub`.
 2. Install `pr-checker-go` 
    
    ```shell
-      go install github.com/rapatao/pr-checker-go@master
+      go install github.com/rapatao/pr-checker-go@main
    ```
 
 3. Install/create the `XBar` plugin
