@@ -36,5 +36,5 @@ It, currently, only support `GitHub`.
    On Mac, the plugin is usually placed at: `${HOME}/Library/Application Support/xbar/plugins/`
 
    ```shell
-   pr-checker-go install=${HOME}/Library/Application Support/xbar/plugins/
+   pr-checker-go install=${HOME}/Library/Application Support/xbar/plugins/pr-checker.30m.sh
    ```
