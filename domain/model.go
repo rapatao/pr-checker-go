@@ -15,13 +15,14 @@ type Service struct {
 }
 
 type PullRequest struct {
-	Service    string
-	Repository string
-	Title      string
-	Number     int
-	Link       string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	Author     string
-	IsDraft    bool
+	Service       string
+	Repository    string
+	RepositoryURL string
+	Title         string
+	Number        int
+	Link          string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	Author        string
+	IsDraft       bool
 }

@@ -24,6 +24,7 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 				Node struct {
 					PullRequest struct {
 						Repository struct {
+							Url           string
 							NameWithOwner string
 						}
 
@@ -72,15 +73,16 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 		}
 
 		prs = append(prs, domain.PullRequest{
-			Service:    service.Name,
-			Repository: pr.Repository.NameWithOwner,
-			Title:      pr.Title,
-			Number:     pr.Number,
-			Link:       pr.Url,
-			CreatedAt:  pr.CreatedAt,
-			UpdatedAt:  pr.UpdatedAt,
-			Author:     pr.Author.Login,
-			IsDraft:    pr.IsDraft,
+			Service:       service.Name,
+			Repository:    pr.Repository.NameWithOwner,
+			RepositoryURL: pr.Repository.Url,
+			Title:         pr.Title,
+			Number:        pr.Number,
+			Link:          pr.Url,
+			CreatedAt:     pr.CreatedAt,
+			UpdatedAt:     pr.UpdatedAt,
+			Author:        pr.Author.Login,
+			IsDraft:       pr.IsDraft,
 		})
 
 	}

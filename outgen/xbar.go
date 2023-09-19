@@ -3,6 +3,7 @@ package outgen
 import (
 	"fmt"
 	"github.com/rapatao/pr-checker-go/domain"
+	"time"
 )
 
 func ForXBar(prs []domain.PullRequest) {
@@ -21,7 +22,7 @@ func ForXBar(prs []domain.PullRequest) {
 	}
 
 	for repository, prs := range grouped {
-		fmt.Printf("%s (%d)\n", repository, len(prs))
+		fmt.Printf("%s (%d) | href=%s\n", repository, len(prs), prs[0].RepositoryURL)
 
 		for _, pr := range prs {
 			prefix := ""
@@ -39,4 +40,6 @@ func ForXBar(prs []domain.PullRequest) {
 		}
 	}
 
+	fmt.Printf("---\n")
+	fmt.Printf("Last update: %s\n", time.Now().Format(time.ANSIC))
 }
