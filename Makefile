@@ -7,6 +7,10 @@ deps:
 	go mod tidy
 	go mod vendor
 
+bump-deps:
+	go get -u ./...
+	$(MAKE) deps
+
 test:
 	go test -v -count=1 -coverprofile $(COVER_FILE) -cover ./...
 
