@@ -32,11 +32,23 @@ func ForXBar(prs []domain.PullRequest) {
 				titleColor = "#dbdbdb"
 			}
 
+			if pr.Mergeable != "MERGEABLE" {
+				prefix += fmt.Sprintf("(%s) ", pr.Mergeable)
+				titleColor = "#ff2400"
+			}
+
 			fmt.Printf("-- %s%s | size=14 color=%s href=%s\n", prefix, pr.Title, titleColor, pr.Link)
 			fmt.Printf("-- issue: #%d by %s | size=12 color=#aba9bf\n", pr.Number, pr.Author)
 			fmt.Printf("-- created at %v | size=12 color=#aba9bf\n", pr.CreatedAt)
 			fmt.Printf("-- updated at %v | size=12 color=#aba9bf\n", pr.UpdatedAt)
-			fmt.Printf("--\n")
+
+			stateColor := "#2e8857"
+			if pr.ReviewDecision != "APPROVED" {
+				stateColor = "#fbec5d"
+			}
+			fmt.Printf("-- state: %s | size=12 color=%s\n", pr.ReviewDecision, stateColor)
+
+			fmt.Printf("-----\n")
 		}
 	}
 

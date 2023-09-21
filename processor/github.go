@@ -20,27 +20,27 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 
 	var query struct {
 		Search struct {
-			Edges []struct {
-				Node struct {
-					PullRequest struct {
-						Repository struct {
-							Url           string
-							NameWithOwner string
-						}
+			Nodes []struct {
+				PullRequest struct {
+					Repository struct {
+						Url           string
+						NameWithOwner string
+					}
 
-						Author struct {
-							Login string
-						}
+					Author struct {
+						Login string
+					}
 
-						State     string
-						CreatedAt time.Time
-						UpdatedAt time.Time
-						Number    int
-						Title     string
-						IsDraft   bool
-						Url       string
-					} `graphql:"... on PullRequest"`
-				}
+					ReviewDecision string
+					Mergeable      string
+
+					CreatedAt time.Time
+					UpdatedAt time.Time
+					Number    int
+					Title     string
+					IsDraft   bool
+					Url       string
+				} `graphql:"... on PullRequest"`
 			}
 		} `graphql:"search(query:$filter, type: ISSUE, last: 100)"`
 	}
@@ -63,8 +63,8 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 		log.Print(err)
 	}
 
-	for _, edge := range query.Search.Edges {
-		pr := edge.Node.PullRequest
+	for _, node := range query.Search.Nodes {
+		pr := node.PullRequest
 
 		if pr.Title == "" ||
 			pr.Repository.NameWithOwner == "" ||
@@ -73,16 +73,17 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 		}
 
 		prs = append(prs, domain.PullRequest{
-			Service:       service.Name,
-			Repository:    pr.Repository.NameWithOwner,
-			RepositoryURL: pr.Repository.Url,
-			Title:         pr.Title,
-			Number:        pr.Number,
-			Link:          pr.Url,
-			CreatedAt:     pr.CreatedAt,
-			UpdatedAt:     pr.UpdatedAt,
-			Author:        pr.Author.Login,
-			IsDraft:       pr.IsDraft,
+			Repository:     pr.Repository.NameWithOwner,
+			RepositoryURL:  pr.Repository.Url,
+			Title:          pr.Title,
+			Number:         pr.Number,
+			Link:           pr.Url,
+			CreatedAt:      pr.CreatedAt,
+			UpdatedAt:      pr.UpdatedAt,
+			Author:         pr.Author.Login,
+			IsDraft:        pr.IsDraft,
+			ReviewDecision: pr.ReviewDecision,
+			Mergeable:      pr.Mergeable,
 		})
 
 	}
