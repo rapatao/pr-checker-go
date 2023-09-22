@@ -9,7 +9,7 @@ deps:
 
 bump-deps:
 	go get -u ./...
-	$(MAKE) deps
+	$(MAKE)
 
 test:
 	go test -v -count=1 -coverprofile $(COVER_FILE) -cover ./...
