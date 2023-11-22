@@ -40,6 +40,18 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 					Title     string
 					IsDraft   bool
 					Url       string
+
+					Commits struct {
+						TotalCount int
+						Nodes      []struct {
+							Id     string
+							Commit struct {
+								StatusCheckRollup struct {
+									State string
+								}
+							}
+						}
+					} `graphql:"commits(last: 1)"`
 				} `graphql:"... on PullRequest"`
 			}
 		} `graphql:"search(query:$filter, type: ISSUE, last: 100)"`
@@ -72,6 +84,11 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 			continue
 		}
 
+		checkStatus := ""
+		for _, status := range pr.Commits.Nodes {
+			checkStatus = status.Commit.StatusCheckRollup.State
+		}
+
 		prs = append(prs, domain.PullRequest{
 			Repository:     pr.Repository.NameWithOwner,
 			RepositoryURL:  pr.Repository.Url,
@@ -84,6 +101,7 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 			IsDraft:        pr.IsDraft,
 			ReviewDecision: pr.ReviewDecision,
 			Mergeable:      pr.Mergeable,
+			CheckStatus:    checkStatus,
 		})
 
 	}

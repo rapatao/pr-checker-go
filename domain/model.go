@@ -26,4 +26,5 @@ type PullRequest struct {
 	IsDraft        bool
 	ReviewDecision string
 	Mergeable      string
+	CheckStatus    string
 }

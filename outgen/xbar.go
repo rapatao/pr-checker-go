@@ -6,6 +6,13 @@ import (
 	"time"
 )
 
+var (
+	gray   = "#e6e9e6"
+	green  = "#538d22"
+	red    = "#941b0c"
+	yellow = "#ffc300"
+)
+
 func ForXBar(prs []domain.PullRequest) {
 	fmt.Printf("PR's #%d\n", len(prs))
 	fmt.Printf("---\n")
@@ -22,31 +29,41 @@ func ForXBar(prs []domain.PullRequest) {
 	}
 
 	for repository, prs := range grouped {
-		fmt.Printf("%s (%d) | href=%s\n", repository, len(prs), prs[0].RepositoryURL)
+		fmt.Printf("%s (%d) | color=%s href=%s\n", repository, len(prs), gray, prs[0].RepositoryURL)
 
 		for _, pr := range prs {
 			prefix := ""
-			titleColor := "#a0db8e"
+			titleColor := green
 			if pr.IsDraft {
 				prefix = "(DRAFT) "
-				titleColor = "#dbdbdb"
+				titleColor = gray
 			}
 
 			if pr.Mergeable != "MERGEABLE" {
 				prefix += fmt.Sprintf("(%s) ", pr.Mergeable)
-				titleColor = "#ff2400"
+				titleColor = red
 			}
 
 			fmt.Printf("-- %s%s | size=14 color=%s href=%s\n", prefix, pr.Title, titleColor, pr.Link)
-			fmt.Printf("-- issue: #%d by %s | size=12 color=#aba9bf\n", pr.Number, pr.Author)
-			fmt.Printf("-- created at %v | size=12 color=#aba9bf\n", pr.CreatedAt)
-			fmt.Printf("-- updated at %v | size=12 color=#aba9bf\n", pr.UpdatedAt)
+			fmt.Printf("-- issue: #%d by %s | size=12 color=%s\n", pr.Number, pr.Author, gray)
+			fmt.Printf("-- created at %v | size=12 color=%s\n", pr.CreatedAt, gray)
+			fmt.Printf("-- updated at %v | size=12 color=%s\n", pr.UpdatedAt, gray)
 
-			stateColor := "#2e8857"
-			if pr.ReviewDecision != "APPROVED" {
-				stateColor = "#fbec5d"
+			if pr.ReviewDecision != "" {
+				stateColor := green
+				if pr.ReviewDecision != "APPROVED" {
+					stateColor = yellow
+				}
+				fmt.Printf("-- state: %s | size=12 color=%s\n", pr.ReviewDecision, stateColor)
 			}
-			fmt.Printf("-- state: %s | size=12 color=%s\n", pr.ReviewDecision, stateColor)
+
+			if pr.CheckStatus != "" {
+				checkColor := green
+				if pr.CheckStatus == "FAILURE" {
+					checkColor = red
+				}
+				fmt.Printf("-- checks: %s | size=12 color=%s\n", pr.CheckStatus, checkColor)
+			}
 
 			fmt.Printf("-----\n")
 		}
