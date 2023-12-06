@@ -3,6 +3,7 @@ package outgen
 import (
 	"fmt"
 	"github.com/rapatao/pr-checker-go/domain"
+	"sort"
 	"time"
 )
 
@@ -28,7 +29,16 @@ func ForXBar(prs []domain.PullRequest) {
 		grouped[pr.Repository] = list
 	}
 
-	for repository, prs := range grouped {
+	repos := make([]string, 0, len(grouped))
+	for repository, _ := range grouped {
+		repos = append(repos, repository)
+	}
+
+	sort.Strings(repos)
+
+	for _, repository := range repos {
+		prs := grouped[repository]
+
 		fmt.Printf("%s (%d) | color=%s href=%s\n", repository, len(prs), gray, prs[0].RepositoryURL)
 
 		for _, pr := range prs {
