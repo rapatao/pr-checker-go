@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/rapatao/pr-checker-go/domain"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -39,7 +40,7 @@ func ForXBar(prs []domain.PullRequest) {
 	for _, repository := range repos {
 		prs := grouped[repository]
 
-		fmt.Printf("%s (%d) | color=%s href=%s\n", repository, len(prs), gray, prs[0].RepositoryURL)
+		fmt.Printf("%s (%d) | color=%s | href=%s\n", repository, len(prs), gray, prs[0].RepositoryURL)
 
 		for _, pr := range prs {
 			prefix := ""
@@ -54,17 +55,19 @@ func ForXBar(prs []domain.PullRequest) {
 				titleColor = red
 			}
 
-			fmt.Printf("-- %s%s | size=14 color=%s href=%s\n", prefix, pr.Title, titleColor, pr.Link)
-			fmt.Printf("-- issue: #%d by %s | size=12 color=%s\n", pr.Number, pr.Author, gray)
-			fmt.Printf("-- created at %v | size=12 color=%s\n", pr.CreatedAt, gray)
-			fmt.Printf("-- updated at %v | size=12 color=%s\n", pr.UpdatedAt, gray)
+			prTitle := strings.ReplaceAll(pr.Title, "|", "ǀ")
+
+			fmt.Printf("-- %s%s | size=14 | color=%s | href=%s | ansi=false \n", prefix, prTitle, titleColor, pr.Link)
+			fmt.Printf("-- issue: #%d by %s | size=12 | color=%s\n", pr.Number, pr.Author, gray)
+			fmt.Printf("-- created at %v | size=12 | color=%s\n", pr.CreatedAt, gray)
+			fmt.Printf("-- updated at %v | size=12 | color=%s\n", pr.UpdatedAt, gray)
 
 			if pr.ReviewDecision != "" {
 				stateColor := green
 				if pr.ReviewDecision != "APPROVED" {
 					stateColor = yellow
 				}
-				fmt.Printf("-- state: %s | size=12 color=%s\n", pr.ReviewDecision, stateColor)
+				fmt.Printf("-- state: %s | size=12 | color=%s\n", pr.ReviewDecision, stateColor)
 			}
 
 			if pr.CheckStatus != "" {
@@ -72,7 +75,7 @@ func ForXBar(prs []domain.PullRequest) {
 				if pr.CheckStatus == "FAILURE" {
 					checkColor = red
 				}
-				fmt.Printf("-- checks: %s | size=12 color=%s\n", pr.CheckStatus, checkColor)
+				fmt.Printf("-- checks: %s | size=12 | color=%s\n", pr.CheckStatus, checkColor)
 			}
 
 			fmt.Printf("-----\n")

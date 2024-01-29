@@ -3,8 +3,8 @@ module github.com/rapatao/pr-checker-go
 go 1.21
 
 require (
-	github.com/shurcooL/githubv4 v0.0.0-20231126234147-1cffa1f02456
-	golang.org/x/oauth2 v0.15.0
+	github.com/shurcooL/githubv4 v0.0.0-20240120211514-18a1ae0e79dc
+	golang.org/x/oauth2 v0.16.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
