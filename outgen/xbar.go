@@ -3,16 +3,18 @@ package outgen
 import (
 	"fmt"
 	"github.com/rapatao/pr-checker-go/domain"
+	"os"
 	"sort"
 	"strings"
 	"time"
 )
 
+type Color string
+
 var (
-	gray   = "#e6e9e6"
-	green  = "#538d22"
-	red    = "#941b0c"
-	yellow = "#ffc300"
+	NoColor   Color = ""
+	OkColor   Color = "| color=#538d22"
+	FailColor Color = "| color=#941b0c"
 )
 
 func ForXBar(prs []domain.PullRequest) {
@@ -40,42 +42,42 @@ func ForXBar(prs []domain.PullRequest) {
 	for _, repository := range repos {
 		prs := grouped[repository]
 
-		fmt.Printf("%s (%d) | color=%s | href=%s\n", repository, len(prs), gray, prs[0].RepositoryURL)
+		fmt.Printf("%s (%d) | href=%s\n", repository, len(prs), prs[0].RepositoryURL)
 
 		for _, pr := range prs {
 			prefix := ""
-			titleColor := green
+			titleColor := OkColor
 			if pr.IsDraft {
 				prefix = "(DRAFT) "
-				titleColor = gray
+				titleColor = NoColor
 			}
 
 			if pr.Mergeable != "MERGEABLE" {
 				prefix += fmt.Sprintf("(%s) ", pr.Mergeable)
-				titleColor = red
+				titleColor = FailColor
 			}
 
 			prTitle := strings.ReplaceAll(pr.Title, "|", "ǀ")
 
-			fmt.Printf("-- %s%s | size=14 | color=%s | href=%s | ansi=false \n", prefix, prTitle, titleColor, pr.Link)
-			fmt.Printf("-- issue: #%d by %s | size=12 | color=%s\n", pr.Number, pr.Author, gray)
-			fmt.Printf("-- created at %v | size=12 | color=%s\n", pr.CreatedAt, gray)
-			fmt.Printf("-- updated at %v | size=12 | color=%s\n", pr.UpdatedAt, gray)
+			fmt.Printf("-- %s%s | href=%s %s\n", prefix, prTitle, pr.Link, titleColor)
+			fmt.Printf("-- issue: #%d by %s\n", pr.Number, pr.Author)
+			fmt.Printf("-- created at %v\n", pr.CreatedAt.Format(time.RFC1123))
+			fmt.Printf("-- updated at %v\n", pr.UpdatedAt.Format(time.RFC1123))
 
 			if pr.ReviewDecision != "" {
-				stateColor := green
-				if pr.ReviewDecision != "APPROVED" {
-					stateColor = yellow
+				stateColor := FailColor
+				if pr.ReviewDecision == "APPROVED" {
+					stateColor = OkColor
 				}
-				fmt.Printf("-- state: %s | size=12 | color=%s\n", pr.ReviewDecision, stateColor)
+				fmt.Printf("-- state: %s %s\n", pr.ReviewDecision, stateColor)
 			}
 
 			if pr.CheckStatus != "" {
-				checkColor := green
+				checkColor := OkColor
 				if pr.CheckStatus == "FAILURE" {
-					checkColor = red
+					checkColor = FailColor
 				}
-				fmt.Printf("-- checks: %s | size=12 | color=%s\n", pr.CheckStatus, checkColor)
+				fmt.Printf("-- checks: %s %s\n", pr.CheckStatus, checkColor)
 			}
 
 			fmt.Printf("-----\n")
@@ -83,5 +85,7 @@ func ForXBar(prs []domain.PullRequest) {
 	}
 
 	fmt.Printf("---\n")
-	fmt.Printf("Last update: %s\n", time.Now().Format(time.ANSIC))
+	fmt.Printf("Last update: %s\n", time.Now().Format(time.RFC1123))
+	fmt.Printf("Dark mode: %s\n", os.Getenv("BitBarDarkMode"))
+
 }
