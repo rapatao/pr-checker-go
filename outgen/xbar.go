@@ -3,7 +3,6 @@ package outgen
 import (
 	"fmt"
 	"github.com/rapatao/pr-checker-go/domain"
-	"os"
 	"sort"
 	"strings"
 	"time"
@@ -86,6 +85,4 @@ func ForXBar(prs []domain.PullRequest) {
 
 	fmt.Printf("---\n")
 	fmt.Printf("Last update: %s\n", time.Now().Format(time.RFC1123))
-	fmt.Printf("Dark mode: %s\n", os.Getenv("BitBarDarkMode"))
-
 }
