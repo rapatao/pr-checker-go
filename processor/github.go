@@ -67,6 +67,10 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 		filter = fmt.Sprintf("%s repo:%s", filter, repository)
 	}
 
+	if len(service.Owner) > 0 {
+		filter = fmt.Sprintf("%s owner:%s", filter, service.Owner)
+	}
+
 	variables := map[string]interface{}{
 		"filter": githubv4.String(filter),
 	}

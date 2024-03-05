@@ -12,6 +12,7 @@ type Service struct {
 	Token        string   `yaml:"token"`
 	Author       string   `yaml:"author"`
 	Repositories []string `yaml:"repositories"`
+	Owner        string   `yaml:"owner"`
 }
 
 type PullRequest struct {
