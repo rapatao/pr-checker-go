@@ -3,17 +3,24 @@ package processor
 import (
 	"context"
 	"github.com/rapatao/pr-checker-go/domain"
+	"log"
+	"strings"
 )
 
-type void struct{}
-
-var nothing void
+var extractors = map[string]Extractor{
+	"github": NewGitHubExtractor(),
+}
 
 func Process(ctx context.Context, config *domain.Config) []domain.PullRequest {
 	prs := make(map[domain.PullRequest]void)
 
 	for _, service := range config.Services {
-		for _, pr := range extractGitHub(ctx, &service) {
+		extractor, ok := extractors[strings.ToLower(service.Provider)]
+		if !ok {
+			log.Fatalf("service %s is not supported", service.Provider)
+		}
+
+		for _, pr := range extractor.Extract(ctx, &service) {
 			prs[pr] = nothing
 		}
 	}
