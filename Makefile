@@ -1,7 +1,7 @@
 BINARY_NAME=app
 COVER_FILE=coverage.out
 
-all: deps test build
+all: deps lint test build
 
 deps:
 	go mod tidy
