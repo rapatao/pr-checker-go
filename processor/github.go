@@ -10,7 +10,13 @@ import (
 	"time"
 )
 
-func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRequest {
+type GitHubExtractor struct{}
+
+func NewGitHubExtractor() Extractor {
+	return &GitHubExtractor{}
+}
+
+func (e *GitHubExtractor) Extract(ctx context.Context, service *domain.Service) []domain.PullRequest {
 	token := &oauth2.Token{AccessToken: service.Token}
 	tokenSource := oauth2.StaticTokenSource(token)
 	oauth2Client := oauth2.NewClient(ctx, tokenSource)
@@ -112,3 +118,5 @@ func extractGitHub(ctx context.Context, service *domain.Service) []domain.PullRe
 
 	return prs
 }
+
+var _ Extractor = (*GitHubExtractor)(nil)

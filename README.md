@@ -8,7 +8,8 @@ It, currently, only support `GitHub`.
 
 1. Create a configuration file containing all repositories that must be monitored.
 
-   The configuration file must be at `${HOME}/.pr-checker.yml`. Details on how to define it can be found in the [Configuration](#configuration) section.
+   The configuration file must be at `${HOME}/.pr-checker.yml`. Details on how to define it can be found in
+   the [Configuration](#configuration) section.
 
    ```yaml
    services:
@@ -95,3 +96,21 @@ owner will be included in the response.
 
     - name: ...
 ```
+
+## Customizing the menu
+
+# Customizing the menu
+
+It is possible to customize the generation menu by creating a custom template.
+
+The application looks up for the following file `${HOME}/.pr-checker.tmpl`, when it is found, it is used instead of the
+default one.
+
+This template must be written using the [Go Template](https://pkg.go.dev/text/template) package.
+
+* The default template can be checked [here](outgen/xbar_stdout.txt.tmpl)
+
+The data provided to the template is a `map[string][]domain.PullRequest{}`, where the `key` is the repository's name and
+the `value` is a list of all pull requested on it. The `domain` package can be checked [here](domain/pull_request.go)
+
+

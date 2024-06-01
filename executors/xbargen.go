@@ -11,11 +11,15 @@ import (
 	"os"
 )
 
-type XBarGen struct{}
+type XBarGen struct {
+	output outgen.OutGen
+}
 
-func (X *XBarGen) Prepare() {}
+func (e *XBarGen) Prepare() {
+	e.output = outgen.NewStdOutGen()
+}
 
-func (X *XBarGen) Run() {
+func (e *XBarGen) Run() {
 	log.SetPrefix("#")
 
 	home := os.Getenv("HOME")
@@ -34,10 +38,10 @@ func (X *XBarGen) Run() {
 
 	pullRequests := processor.Process(ctx, &config)
 
-	outgen.ForXBar(pullRequests)
+	e.output.Generate(pullRequests)
 }
 
-func (X *XBarGen) Is() bool {
+func (e *XBarGen) Is() bool {
 	return true
 }
 
