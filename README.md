@@ -99,8 +99,6 @@ owner will be included in the response.
 
 ## Customizing the menu
 
-# Customizing the menu
-
 It is possible to customize the generation menu by creating a custom template.
 
 The application looks up for the following file `${HOME}/.pr-checker.tmpl`, when it is found, it is used instead of the
