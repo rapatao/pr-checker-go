@@ -1,11 +1,16 @@
 package executors
 
 import (
+	_ "embed"
 	"flag"
 	"fmt"
 	"log"
 	"os"
+	"text/template"
 )
+
+//go:embed install.sh.tmpl
+var scriptTemplate string
 
 type Installer struct {
 	plugin string
@@ -20,27 +25,32 @@ func (i *Installer) Prepare() {
 }
 
 func (i *Installer) Run() {
-	log.Printf("installing xbar script\n")
+	log.Println("installing xbar script", i.plugin)
 
 	executable, err := os.Executable()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	script := fmt.Sprintf(
-		`#!/usr/bin/env sh
-
-if command -v %s > /dev/null 2>&1; then
-  %s
-fi
-`, executable, executable)
-
-	err = os.WriteFile(i.plugin, []byte(script), os.ModePerm)
+	tmpl, err := template.New("install").Parse(scriptTemplate)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Printf("Plugin created at: %s\n\n%s", i.plugin, script)
+	file, err := os.OpenFile(i.plugin, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0777)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	err = tmpl.Execute(file, map[string]string{
+		"executable": executable,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Printf("Plugin created at: %s\n", i.plugin)
 }
 
 func (i *Installer) Is() bool {
