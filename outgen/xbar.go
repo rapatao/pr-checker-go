@@ -18,7 +18,7 @@ var (
 
 type XBarOutGen struct{}
 
-func NewXBarOutGen() domain.OutGen {
+func NewXBarOutGen() OutGen {
 	return &XBarOutGen{}
 }
 
@@ -38,7 +38,7 @@ func (o *XBarOutGen) Generate(prs []domain.PullRequest) {
 	}
 
 	repos := make([]string, 0, len(grouped))
-	for repository, _ := range grouped {
+	for repository := range grouped {
 		repos = append(repos, repository)
 	}
 
@@ -93,4 +93,4 @@ func (o *XBarOutGen) Generate(prs []domain.PullRequest) {
 	fmt.Printf("Last update: %s\n", time.Now().Format(time.RFC1123))
 }
 
-var _ domain.OutGen = (*XBarOutGen)(nil)
+var _ OutGen = (*XBarOutGen)(nil)
