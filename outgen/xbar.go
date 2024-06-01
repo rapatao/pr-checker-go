@@ -16,7 +16,13 @@ var (
 	FailColor Color = "| color=#941b0c"
 )
 
-func ForXBar(prs []domain.PullRequest) {
+type XBarOutGen struct{}
+
+func NewXBarOutGen() domain.OutGen {
+	return &XBarOutGen{}
+}
+
+func (o *XBarOutGen) Generate(prs []domain.PullRequest) {
 	fmt.Printf("PR's #%d\n", len(prs))
 	fmt.Printf("---\n")
 
@@ -86,3 +92,5 @@ func ForXBar(prs []domain.PullRequest) {
 	fmt.Printf("---\n")
 	fmt.Printf("Last update: %s\n", time.Now().Format(time.RFC1123))
 }
+
+var _ domain.OutGen = (*XBarOutGen)(nil)

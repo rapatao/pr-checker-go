@@ -34,7 +34,7 @@ func (X *XBarGen) Run() {
 
 	pullRequests := processor.Process(ctx, &config)
 
-	outgen.ForXBar(pullRequests)
+	outgen.NewXBarOutGen().Generate(pullRequests)
 }
 
 func (X *XBarGen) Is() bool {
