@@ -1,0 +1,41 @@
+{{- $NoColor   := "" -}}
+{{- $OkColor   := "| color=#538d22" -}}
+{{- $FailColor := "| color=#941b0c" -}}
+PR's #{{ .Total }}
+---
+{{ range $repo, $prs := .Requests -}}
+{{ $repo }} ({{ len $prs }}) | href={{ (index $prs 0).RepositoryURL }}
+{{ range $index, $pr := $prs }}
+{{- $prefix := "" -}}
+{{- $titleColor := $OkColor -}}
+{{- if .IsDraft -}}
+{{- $prefix = "(DRAFT) " -}}
+{{- $titleColor = $NoColor -}}
+{{- end -}}
+{{- if ne .Mergeable "MERGEABLE" -}}
+{{- $prefix = (printf "%s (%s)" $prefix) -}}
+{{- $titleColor = $FailColor -}}
+{{- end -}}
+-- {{ $prefix }}{{ .Title }} | href={{ .Link }} {{ $titleColor }}
+-- issue: #{{ .Number }} by {{ .Author }}
+-- created at {{ .CreatedAt.Format "Mon, 02 Jan 2006 15:04:05 MST" }}
+-- updated at {{ .UpdatedAt.Format "Mon, 02 Jan 2006 15:04:05 MST" }}
+{{ if ne .ReviewDecision "" -}}
+{{- $stateColor := $FailColor -}}
+{{- if eq .ReviewDecision "APPROVED" -}}
+{{- $stateColor := $OkColor -}}
+{{- end -}}
+-- state: {{ .ReviewDecision }} {{ $stateColor }}
+{{ end -}}
+{{- if ne .CheckStatus "" }}
+{{- $checkColor := $OkColor -}}
+{{- if eq .CheckStatus "FAILURE" -}}
+{{- $checkColor := $FailColor -}}
+{{- end -}}
+-- checks: {{ .CheckStatus }} {{ $checkColor }}
+{{ end -}}
+-----
+{{ end -}}
+{{ end -}}
+---
+Last update: {{ .GeneratedAt.Format "Mon, 02 Jan 2006 15:04:05 MST" }}
