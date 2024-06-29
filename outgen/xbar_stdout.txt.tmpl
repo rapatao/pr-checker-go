@@ -23,14 +23,14 @@ PR's #{{ .Total }}
 {{ if ne .ReviewDecision "" -}}
 {{- $stateColor := $FailColor -}}
 {{- if eq .ReviewDecision "APPROVED" -}}
-{{- $stateColor := $OkColor -}}
+{{- $stateColor = $OkColor -}}
 {{- end -}}
 -- state: {{ .ReviewDecision }} {{ $stateColor }}
 {{ end -}}
 {{- if ne .CheckStatus "" }}
 {{- $checkColor := $OkColor -}}
 {{- if eq .CheckStatus "FAILURE" -}}
-{{- $checkColor := $FailColor -}}
+{{- $checkColor = $FailColor -}}
 {{- end -}}
 -- checks: {{ .CheckStatus }} {{ $checkColor }}
 {{ end -}}
