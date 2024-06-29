@@ -4,7 +4,7 @@ go 1.22
 
 require (
 	github.com/shurcooL/githubv4 v0.0.0-20240429030203-be2daab69064
-	golang.org/x/oauth2 v0.20.0
+	golang.org/x/oauth2 v0.21.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
