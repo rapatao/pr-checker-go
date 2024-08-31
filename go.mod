@@ -1,6 +1,6 @@
 module github.com/rapatao/pr-checker-go
 
-go 1.22
+go 1.23
 
 require (
 	github.com/shurcooL/githubv4 v0.0.0-20240727222349-48295856cce7
