@@ -16,7 +16,10 @@ PR's #{{ .Total }}
 {{- $prefix = (printf "%s (%s)" $prefix) -}}
 {{- $titleColor = $FailColor -}}
 {{- end -}}
--- {{ $prefix }}{{ .Title }} | href={{ .Link }} {{ $titleColor }}
+{{- $title := .Title -}}
+{{- $title = replace $title "|" "_" -}}
+{{- $title = replace $title ":" "_" -}}
+-- {{ $prefix }}{{ $title }} | href={{ .Link }} {{ $titleColor }}
 -- issue: #{{ .Number }} by {{ .Author }}
 -- created at {{ .CreatedAt.Format "Mon, 02 Jan 2006 15:04:05 MST" }}
 -- updated at {{ .UpdatedAt.Format "Mon, 02 Jan 2006 15:04:05 MST" }}

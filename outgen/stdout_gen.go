@@ -7,6 +7,7 @@ import (
 	"github.com/rapatao/pr-checker-go/domain"
 	"log"
 	"os"
+	"strings"
 	"text/template"
 	"time"
 )
@@ -48,7 +49,11 @@ func (o *StdOutGen) Generate(prs []domain.PullRequest) {
 		grouped[pr.Repository] = list
 	}
 
-	tmpl, err := template.New("xbar").Parse(o.template)
+	tmpl, err := template.New("xbar").
+		Funcs(template.FuncMap{
+			"replace": replace,
+		}).
+		Parse(o.template)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -61,6 +66,10 @@ func (o *StdOutGen) Generate(prs []domain.PullRequest) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func replace(input string, from string, with string) string {
+	return strings.ReplaceAll(input, from, with)
 }
 
 var _ OutGen = (*StdOutGen)(nil)
