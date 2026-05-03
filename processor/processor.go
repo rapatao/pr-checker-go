@@ -2,9 +2,10 @@ package processor
 
 import (
 	"context"
-	"github.com/rapatao/pr-checker-go/domain"
 	"log"
 	"strings"
+
+	"github.com/rapatao/pr-checker-go/domain"
 )
 
 var extractors = map[string]Extractor{
