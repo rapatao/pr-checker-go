@@ -23,6 +23,7 @@ var (
 
 func main() {
 	installFlag := flag.Bool("install", false, "Install as a launch agent")
+	uninstallFlag := flag.Bool("uninstall", false, "Uninstall the launch agent")
 	flag.Parse()
 
 	if *installFlag {
@@ -31,6 +32,15 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Println("Installed successfully!")
+		os.Exit(0)
+	}
+
+	if *uninstallFlag {
+		if err := installer.Uninstall(); err != nil {
+			fmt.Printf("Failed to uninstall: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println("Uninstalled successfully!")
 		os.Exit(0)
 	}
 

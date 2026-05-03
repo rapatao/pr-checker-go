@@ -21,7 +21,12 @@ To run the app in the background on login:
 ```shell
 pr-checker-app --install
 ```
-*Note: This registers the binary as a macOS Launch Agent.*
+
+To remove the background service:
+```shell
+pr-checker-app --uninstall
+```
+*Note: This unloads the service from `launchctl` and removes the associated plist file.*
 
 ### Configuration
 

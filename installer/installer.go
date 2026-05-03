@@ -47,3 +47,14 @@ func Install() error {
 	// Load the agent
 	return exec.Command("launchctl", "load", plistPath).Run()
 }
+
+func Uninstall() error {
+	home := os.Getenv("HOME")
+	plistPath := filepath.Join(home, "Library", "LaunchAgents", "com.rapatao.pr-checker.plist")
+
+	// Unload the agent
+	_ = exec.Command("launchctl", "unload", plistPath).Run()
+
+	// Remove the file
+	return os.Remove(plistPath)
+}
