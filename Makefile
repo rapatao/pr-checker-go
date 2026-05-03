@@ -1,26 +1,15 @@
-BINARY_NAME=app
-COVER_FILE=coverage.out
+BINARY_NAME=pr-checker-app
 
-all: deps lint test build
+all: build
 
 deps:
 	go mod tidy
 	go mod vendor
 
-bump-deps:
-	go get -u ./...
-	$(MAKE)
-
-test:
-	go test -v -count=1 -coverprofile $(COVER_FILE) -cover ./...
-
 build:
-	go build -mod vendor -a -o $(BINARY_NAME) .
+	go build -mod vendor -o $(BINARY_NAME) main.go
 
-run:
-	go run .
-
-install:
+install-local:
 	go install .
 
 lint:

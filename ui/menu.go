@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 	"os/exec"
+	"sort"
 	"time"
 
 	"fyne.io/systray"
@@ -18,7 +19,9 @@ func Init(onRefresh func()) {
 }
 
 func OpenBrowser(url string) {
-	exec.Command("open", url).Run()
+	if err := exec.Command("open", url).Run(); err != nil {
+		fmt.Printf("Error opening browser: %v\n", err)
+	}
 }
 
 func SetLoading() {
@@ -42,7 +45,18 @@ func RenderPRs(prs []domain.PullRequest) {
 		prsByRepo[pr.Repository] = append(prsByRepo[pr.Repository], pr)
 	}
 
-	for repo, repoPrs := range prsByRepo {
+	repoNames := make([]string, 0, len(prsByRepo))
+	for repo := range prsByRepo {
+		repoNames = append(repoNames, repo)
+	}
+	sort.Strings(repoNames)
+
+	for _, repo := range repoNames {
+		repoPrs := prsByRepo[repo]
+		sort.Slice(repoPrs, func(i, j int) bool {
+			return repoPrs[i].Number < repoPrs[j].Number
+		})
+
 		mRepo := systray.AddMenuItem(fmt.Sprintf("%s (%d)", repo, len(repoPrs)), "")
 		go func(url string) {
 			for range mRepo.ClickedCh {
@@ -51,7 +65,7 @@ func RenderPRs(prs []domain.PullRequest) {
 		}(repoPrs[0].RepositoryURL)
 
 		for _, pr := range repoPrs {
-			m := mRepo.AddSubMenuItem(pr.Title, "")
+			m := mRepo.AddSubMenuItem(fmt.Sprintf("#%d: %s", pr.Number, pr.Title), "")
 			go func(url string) {
 				for range m.ClickedCh {
 					OpenBrowser(url)
