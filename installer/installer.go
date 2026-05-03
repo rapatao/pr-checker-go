@@ -3,6 +3,7 @@ package installer
 import (
 	_ "embed"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"text/template"
 )
@@ -34,5 +35,10 @@ func Install() error {
 		return err
 	}
 
-	return tmpl.Execute(f, map[string]string{"Path": absPath})
+	if err := tmpl.Execute(f, map[string]string{"Path": absPath}); err != nil {
+		return err
+	}
+
+	// Load the agent
+	return exec.Command("launchctl", "load", plistPath).Run()
 }
