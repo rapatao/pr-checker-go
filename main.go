@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"os"
 	"sync"
@@ -9,6 +10,7 @@ import (
 
 	"fyne.io/systray"
 	"github.com/rapatao/pr-checker-go/domain"
+	"github.com/rapatao/pr-checker-go/installer"
 	"github.com/rapatao/pr-checker-go/processor"
 	"github.com/rapatao/pr-checker-go/ui"
 	"gopkg.in/yaml.v3"
@@ -20,6 +22,18 @@ var (
 )
 
 func main() {
+	installFlag := flag.Bool("install", false, "Install as a launch agent")
+	flag.Parse()
+
+	if *installFlag {
+		if err := installer.Install(); err != nil {
+			fmt.Printf("Failed to install: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println("Installed successfully!")
+		os.Exit(0)
+	}
+
 	systray.Run(onReady, onExit)
 }
 
