@@ -4,21 +4,24 @@ A standalone macOS menu bar application to monitor your GitHub pull requests.
 
 ## Installation
 
-### Binary
-
-1. Build the application:
-
+### From Source
+1. Clone the repository and build:
    ```shell
    go build -o pr-checker-app main.go
    ```
 
-2. (Optional) Install as a macOS Launch Agent to run in the background on login:
+### Using Go Install
+Alternatively, you can install the latest version directly:
+```shell
+go install github.com/rapatao/pr-checker-go@latest
+```
 
-   ```shell
-   ./pr-checker-app --install
-   ```
-
-   *Note: This will create a `launchd` plist file in `~/Library/LaunchAgents/` using the absolute path of the current binary.*
+### Background Execution (Launch Agent)
+To run the app in the background on login:
+```shell
+pr-checker-app --install
+```
+*Note: This registers the binary as a macOS Launch Agent.*
 
 ### Configuration
 
