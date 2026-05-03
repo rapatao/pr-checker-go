@@ -28,14 +28,19 @@ func Install() error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
 
 	tmpl, err := template.New("plist").Parse(plistTemplate)
 	if err != nil {
+		_ = f.Close()
 		return err
 	}
 
 	if err := tmpl.Execute(f, map[string]string{"Path": absPath}); err != nil {
+		_ = f.Close()
+		return err
+	}
+
+	if err := f.Close(); err != nil {
 		return err
 	}
 

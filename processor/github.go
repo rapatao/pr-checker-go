@@ -3,11 +3,12 @@ package processor
 import (
 	"context"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/rapatao/pr-checker-go/domain"
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
-	"log"
-	"time"
 )
 
 type GitHubExtractor struct{}

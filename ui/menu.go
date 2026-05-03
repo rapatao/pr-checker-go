@@ -18,7 +18,9 @@ func Init(onRefresh func()) {
 }
 
 func OpenBrowser(url string) {
-	exec.Command("open", url).Run()
+	if err := exec.Command("open", url).Run(); err != nil {
+		fmt.Printf("Error opening browser: %v\n", err)
+	}
 }
 
 func SetLoading() {
