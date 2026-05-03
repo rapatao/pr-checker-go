@@ -2,9 +2,10 @@ package processor
 
 import (
 	"context"
-	"github.com/rapatao/pr-checker-go/domain"
 	"log"
 	"strings"
+
+	"github.com/rapatao/pr-checker-go/domain"
 )
 
 var extractors = map[string]Extractor{
@@ -12,7 +13,11 @@ var extractors = map[string]Extractor{
 }
 
 func Process(ctx context.Context, config *domain.Config) []domain.PullRequest {
-	prs := make(map[domain.PullRequest]void)
+	return process(ctx, config, extractors)
+}
+
+func process(ctx context.Context, config *domain.Config, extractors map[string]Extractor) []domain.PullRequest {
+	prs := make(map[string]domain.PullRequest)
 
 	for _, service := range config.Services {
 		extractor, ok := extractors[strings.ToLower(service.Provider)]
@@ -21,13 +26,13 @@ func Process(ctx context.Context, config *domain.Config) []domain.PullRequest {
 		}
 
 		for _, pr := range extractor.Extract(ctx, &service) {
-			prs[pr] = nothing
+			prs[pr.Link] = pr
 		}
 	}
 
 	result := make([]domain.PullRequest, 0, len(prs))
 
-	for pr := range prs {
+	for _, pr := range prs {
 		result = append(result, pr)
 	}
 

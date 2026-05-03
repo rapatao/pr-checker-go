@@ -2,6 +2,7 @@ package processor
 
 import (
 	"context"
+
 	"github.com/rapatao/pr-checker-go/domain"
 )
 
