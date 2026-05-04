@@ -1,5 +1,6 @@
 .idea/
 
 pr-checker-app
+pr-checker-go
 app
 coverage.out

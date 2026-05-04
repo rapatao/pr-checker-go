@@ -66,6 +66,25 @@ func RenderPRs(prs []domain.PullRequest) {
 
 		for _, pr := range repoPrs {
 			m := mRepo.AddSubMenuItem(fmt.Sprintf("#%d: %s", pr.Number, pr.Title), "")
+			mRepo.AddSubMenuItem(fmt.Sprintf("   📅 %s", pr.CreatedAt.Format("2006-01-02 15:04")), "").Disable()
+
+			reviewIcon := "👀"
+			switch pr.ReviewDecision {
+			case "APPROVED":
+				reviewIcon = "✅"
+			case "CHANGES_REQUESTED":
+				reviewIcon = "⚠️"
+			}
+			mRepo.AddSubMenuItem(fmt.Sprintf("   %s %s", reviewIcon, pr.ReviewDecision), "").Disable()
+
+			statusIcon := "⏳"
+			switch pr.CheckStatus {
+			case "SUCCESS":
+				statusIcon = "✅"
+			case "FAILURE", "ERROR":
+				statusIcon = "❌"
+			}
+			mRepo.AddSubMenuItem(fmt.Sprintf("   %s %s", statusIcon, pr.CheckStatus), "").Disable()
 			go func(url string) {
 				for range m.ClickedCh {
 					OpenBrowser(url)
