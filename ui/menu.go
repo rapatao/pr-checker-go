@@ -64,7 +64,10 @@ func RenderPRs(prs []domain.PullRequest) {
 			}
 		}(repoPrs[0].RepositoryURL)
 
-		for _, pr := range repoPrs {
+		for i, pr := range repoPrs {
+			if i > 0 {
+				mRepo.AddSeparator()
+			}
 			m := mRepo.AddSubMenuItem(fmt.Sprintf("#%d: %s", pr.Number, pr.Title), "")
 			mRepo.AddSubMenuItem(fmt.Sprintf("   📅 %s", pr.CreatedAt.Format("2006-01-02 15:04")), "").Disable()
 
