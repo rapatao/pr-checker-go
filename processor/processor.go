@@ -20,6 +20,9 @@ func process(ctx context.Context, config *domain.Config, extractors map[string]E
 	prs := make(map[string]domain.PullRequest)
 
 	for _, service := range config.Services {
+		if ctx.Err() != nil {
+			return nil
+		}
 		extractor, ok := extractors[strings.ToLower(service.Provider)]
 		if !ok {
 			log.Fatalf("service %s is not supported", service.Provider)

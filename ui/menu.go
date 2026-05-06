@@ -25,12 +25,15 @@ func OpenBrowser(url string) {
 }
 
 func SetLoading() {
+	systray.SetTitle("🔄")
 	systray.ResetMenu()
 	mLoading := systray.AddMenuItem("Updating...", "Checking PRs")
 	mLoading.Disable()
+	AddFooter(time.Now())
 }
 
 func SetError(message string) {
+	systray.SetTitle("PR")
 	systray.ResetMenu()
 	systray.AddMenuItem(message, "").Disable()
 	AddFooter(time.Now())

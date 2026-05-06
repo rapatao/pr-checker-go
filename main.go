@@ -17,8 +17,8 @@ import (
 )
 
 var (
-	refreshChan  = make(chan struct{}, 1)
-	refreshMutex sync.Mutex
+	cancelFunc context.CancelFunc
+	mu         sync.Mutex
 )
 
 func main() {
@@ -51,29 +51,19 @@ func onReady() {
 	ui.Init(triggerRefresh)
 
 	// Trigger initial refresh
-	go func() {
-		refreshChan <- struct{}{}
-	}()
+	triggerRefresh()
 
 	go updateMenu()
 }
 
 func updateMenu() {
 	ticker := time.NewTicker(30 * time.Minute)
-	for {
-		select {
-		case <-ticker.C:
-			refresh()
-		case <-refreshChan:
-			refresh()
-		}
+	for range ticker.C {
+		triggerRefresh()
 	}
 }
 
-func refresh() {
-	refreshMutex.Lock()
-	defer refreshMutex.Unlock()
-
+func refresh(ctx context.Context) {
 	ui.SetLoading()
 
 	home := os.Getenv("HOME")
@@ -90,16 +80,28 @@ func refresh() {
 		return
 	}
 
-	prs := processor.Process(context.Background(), &config)
-	ui.RenderPRs(prs)
+	prs := processor.Process(ctx, &config)
+
+	select {
+	case <-ctx.Done():
+		return
+	default:
+		ui.RenderPRs(prs)
+	}
 }
 
 func triggerRefresh() {
-	select {
-	case refreshChan <- struct{}{}:
-	default:
-		// Already refreshing, skip
+	mu.Lock()
+	defer mu.Unlock()
+
+	if cancelFunc != nil {
+		cancelFunc()
 	}
+
+	var ctx context.Context
+	ctx, cancelFunc = context.WithCancel(context.Background())
+
+	go refresh(ctx)
 }
 
 func onExit() {
