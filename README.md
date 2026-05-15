@@ -7,7 +7,7 @@ A standalone macOS menu bar application to monitor your GitHub pull requests.
 ### From Source
 1. Clone the repository and build:
    ```shell
-   go build -o pr-checker-app main.go
+   go build -o pr-checker-go main.go
    ```
 
 ### Using Go Install
@@ -19,12 +19,12 @@ go install github.com/rapatao/pr-checker-go@latest
 ### Background Execution (Launch Agent)
 To run the app in the background on login:
 ```shell
-pr-checker-app --install
+pr-checker-go --install
 ```
 
 To remove the background service:
 ```shell
-pr-checker-app --uninstall
+pr-checker-go --uninstall
 ```
 *Note: This unloads the service from `launchctl` and removes the associated plist file.*
 
