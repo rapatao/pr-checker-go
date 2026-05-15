@@ -1,4 +1,4 @@
-BINARY_NAME=pr-checker-app
+BINARY_NAME=pr-checker-go
 
 all: build
 
