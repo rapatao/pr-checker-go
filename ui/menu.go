@@ -15,7 +15,7 @@ var refreshCallback func()
 func Init(onRefresh func()) {
 	refreshCallback = onRefresh
 	systray.SetTitle("PR")
-	systray.SetTooltip("GitHub PR Checker")
+	systray.SetTooltip("PR Checker")
 }
 
 func OpenBrowser(url string) {

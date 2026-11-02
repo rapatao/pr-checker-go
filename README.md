@@ -1,6 +1,6 @@
 # pr-checker-go
 
-A standalone macOS menu bar application to monitor your GitHub pull requests.
+A standalone macOS menu bar application to monitor your GitHub and Gitea pull requests.
 
 ## Installation
 
@@ -42,7 +42,18 @@ services:
     # owner: <org-or-user>
     # repositories:
     #   - username/repository-name
+  - name: Gitea
+    provider: gitea
+    url: https://gitea.example.com
+    token: <your-access-token>
+    # Optional filters:
+    # author: <username>
+    # owner: <org-or-user>
+    # repositories:
+    #   - username/repository-name
 ```
+
+Gitea lists open PRs in repositories the token can access. Its token needs the `read:repository` and `read:issue` scopes.
 
 ## Features
 

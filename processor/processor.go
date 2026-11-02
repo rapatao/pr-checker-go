@@ -10,6 +10,7 @@ import (
 
 var extractors = map[string]Extractor{
 	"github": NewGitHubExtractor(),
+	"gitea":  NewGiteaExtractor(),
 }
 
 func Process(ctx context.Context, config *domain.Config) []domain.PullRequest {
